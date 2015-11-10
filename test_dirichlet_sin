@@ -1,0 +1,29 @@
+function test_dirichlet_sin(plots, verbose)
+% This test solves the problem for a solution u(x) in [pi/2,
+% 5pi/4], with Dirichlet boundary conditions at x = pi/2 and x = 5pi/4. The
+% second order ODE is u' = 3u + 8sin(4x). 
+
+if nargin == 0
+    plots = false;
+    verbose = false;
+  elseif nargin == 1
+    verbose = false;
+end
+
+N = 100;
+h = pi/N;
+[Ix,D1xx,D1xc,D1xb,D1xf] = diff_matrices1d(100, pi/100, 'd');
+x = linspace(pi/2, 5*pi/4,100);
+f = 8*sin(4*x);
+u_num = (D1xc - 3*eye(N,N))\f';
+u_e = 8*sin(4*x)';
+err = max(abs(u_e - u_num));
+if err > 0.1 % arbitrary margin for order of convergence
+    disp ('false')
+else
+    disp('true')
+end
+end
+
+% When I choose err > 20000 (ie. a large tolerance) I get true. When I
+% choose err > 0.1 (ie. small tolerance) I get false. So it seems to work. 
